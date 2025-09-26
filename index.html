@@ -1,33 +1,86 @@
-// Define o nome do cache
-const CACHE_NAME = 'placar-touch-cache-v1';
-// Lista de arquivos para fazer cache
-const urlsToCache = [
-  '/',
-  '/index.html'
-];
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    
+    <link rel="manifest" href="manifest.json">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Placar Touch">
+    <meta name="application-name" content="Placar Touch">
+    <meta name="theme-color" content="#1c1c1c">
+    
+    <title>Placar Touch</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; background-color: #1c1c1c; -webkit-user-select: none; user-select: none; }
+        #splash-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; background-color: #1c1c1c; transition: opacity 0.5s ease-out; }
+        .logo { width: 150px; height: 150px; }
+        .app-name { font-size: 5vh; color: #fff; margin-top: 20px; font-weight: bold; }
+        .placar-container { display: flex; flex-direction: column; width: 100vw; height: 100vh; }
+        .hidden { display: none !important; }
+        .timer { text-align: center; font-size: 5vh; font-weight: bold; color: #000; padding: 10px 0; background-color: #f0f0f0; border-bottom: 2px solid #ccc; }
+        .times-container { display: flex; flex-grow: 1; }
+        .time { flex: 1; display: flex; justify-content: center; align-items: center; font-size: 40vh; font-weight: bold; color: white; cursor: pointer; transition: transform 0.1s ease; }
+        .time:active { transform: scale(0.98); }
+        #time-vermelho { background-color: #e74c3c; }
+        #time-preto { background-color: #000000; }
+    </style>
+</head>
+<body>
 
-// Evento de instalação: abre o cache e adiciona os arquivos
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Cache aberto');
-        return cache.addAll(urlsToCache);
-      })
-  );
-});
+<div id="splash-screen">
+    <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#ffffff">
+            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM152 256c0-29.3 11.3-56.3 30.6-76.8c-35.3 46.8-35.3 106.8 0 153.6C163.3 312.3 152 285.3 152 256zm16 99.4c-11-14.6-16-32.5-16-51.4s5-36.8 16-51.4c22.1-29.4 53.6-46.6 88-46.6s65.9 17.2 88 46.6c11 14.6 16 32.5 16 51.4s-5 36.8-16 51.4c-22.1 29.4-53.6-46.6-88-46.6s-65.9-17.2-88-46.6zm220.2-176.2c-19.3-20.5-46.3-30.6-76.8-30.6c-29.3 0-56.3 11.3-76.8 30.6c46.8 35.3 106.8 35.3 153.6 0z"/>
+        </svg>
+    </div>
+    <div class="app-name">Placar Touch</div>
+</div>
 
-// Evento de fetch: responde com os arquivos do cache se estiverem disponíveis
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Se encontrar no cache, retorna a resposta do cache
-        if (response) {
-          return response;
-        }
-        // Senão, busca na rede
-        return fetch(event.request);
-      })
-  );
-});
+<div id="placar-container" class="placar-container hidden">
+    <div id="timer" class="timer">00:00:00</div>
+    <div class="times-container">
+        <div id="time-vermelho" class="time">0</div>
+        <div id="time-preto" class="time">0</div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('load', () => {
+        const splash = document.getElementById('splash-screen');
+        const placar = document.getElementById('placar-container');
+        setTimeout(() => {
+            splash.style.opacity = 0;
+            setTimeout(() => {
+                splash.classList.add('hidden');
+                placar.classList.remove('hidden');
+            }, 500);
+        }, 2000);
+    });
+
+    // CAMINHO CORRIGIDO: Sem a barra no início
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Service Worker registrado com sucesso!', reg))
+            .catch(err => console.error('Falha ao registrar Service Worker:', err));
+    }
+    
+    // (O restante do código do placar continua aqui, idêntico ao anterior)
+    const timeVermelhoEl = document.getElementById('time-vermelho');
+    const timePretoEl = document.getElementById('time-preto');
+    const timerEl = document.getElementById('timer');
+    let pontosVermelho = 0, pontosPreto = 0, segundosTotais = 0;
+    let timerInterval, partidaIniciada = false, touchStartY = 0, touchEndY = 0;
+    function iniciarTimer() { if (!partidaIniciada) { partidaIniciada = true; timerInterval = setInterval(() => { segundosTotais++; let h = String(Math.floor(segundosTotais/3600)).padStart(2,'0'), m = String(Math.floor((segundosTotais%3600)/60)).padStart(2,'0'), s = String(segundosTotais%60).padStart(2,'0'); timerEl.textContent = `${h}:${m}:${s}`; }, 1000); } }
+    function atualizarPlacar() { timeVermelhoEl.textContent = pontosVermelho; timePretoEl.textContent = pontosPreto; }
+    timeVermelhoEl.addEventListener('touchstart', e => { iniciarTimer(); touchStartY = e.changedTouches[0].screenY; }, false);
+    timeVermelhoEl.addEventListener('touchend', e => { touchEndY = e.changedTouches[0].screenY; handleSwipe('vermelho'); }, false);
+    timePretoEl.addEventListener('touchstart', e => { iniciarTimer(); touchStartY = e.changedTouches[0].screenY; }, false);
+    timePretoEl.addEventListener('touchend', e => { touchEndY = e.changedTouches[0].screenY; handleSwipe('preto'); }, false);
+    function handleSwipe(time) { const dist = touchEndY - touchStartY; if (dist < -50) { if (time === 'vermelho') pontosVermelho++; else pontosPreto++; } else if (dist > 50) { if (time === 'vermelho' && pontosVermelho > 0) pontosVermelho--; if (time === 'preto' && pontosPreto > 0) pontosPreto--; } else { if (time === 'vermelho') pontosVermelho++; else pontosPreto++; } atualizarPlacar(); }
+</script>
+
+</body>
+</html>
