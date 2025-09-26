@@ -14,16 +14,79 @@
     
     <title>Placar Touch</title>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; background-color: #1c1c1c; -webkit-user-select: none; user-select: none; }
-        #splash-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; background-color: #1c1c1c; transition: opacity 0.5s ease-out; }
-        .logo { width: 150px; height: 150px; }
-        .app-name { font-size: 5vh; color: #fff; margin-top: 20px; font-weight: bold; }
-        .placar-container { display: flex; flex-direction: column; width: 100vw; height: 100vh; }
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; 
+            font-family: 'Segoe UI', Arial, sans-serif; background-color: #1c1c1c; 
+            -webkit-user-select: none; user-select: none; 
+        }
+
+        #splash-screen { 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            width: 100%; height: 100%; background-color: #1c1c1c; 
+            transition: opacity 0.5s ease-out; 
+        }
+
+        /* --- NOVO ESTILO DO LOGO BOLA DE VÔLEI --- */
+        .logo-volleyball {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: white; /* Cor da bola */
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); /* Um brilho suave */
+        }
+
+        .logo-volleyball::before,
+        .logo-volleyball::after {
+            content: '';
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.2); /* Linhas da bola */
+            border-radius: 50%;
+        }
+
+        .logo-volleyball::before { /* Linha horizontal */
+            width: 80%;
+            height: 5px;
+            top: calc(50% - 2.5px);
+        }
+
+        .logo-volleyball::after { /* Linhas curvas */
+            width: 80%;
+            height: 80%;
+            border-top: 5px solid rgba(0, 0, 0, 0.2);
+            border-bottom: 5px solid rgba(0, 0, 0, 0.2);
+            transform: rotate(45deg);
+            box-sizing: border-box; /* Garante que o padding/border não aumente o tamanho */
+        }
+
+        .app-name { 
+            font-size: 5vh; color: #fff; margin-top: 20px; font-weight: bold; 
+        }
+
+        .placar-container { 
+            display: flex; flex-direction: column; width: 100vw; height: 100vh; 
+        }
+        
         .hidden { display: none !important; }
-        .timer { text-align: center; font-size: 5vh; font-weight: bold; color: #000; padding: 10px 0; background-color: #f0f0f0; border-bottom: 2px solid #ccc; }
+
+        .timer { 
+            text-align: center; font-size: 5vh; font-weight: bold; color: #000; 
+            padding: 10px 0; background-color: #f0f0f0; border-bottom: 2px solid #ccc; 
+        }
+
         .times-container { display: flex; flex-grow: 1; }
-        .time { flex: 1; display: flex; justify-content: center; align-items: center; font-size: 40vh; font-weight: bold; color: white; cursor: pointer; transition: transform 0.1s ease; }
+
+        .time { 
+            flex: 1; display: flex; justify-content: center; align-items: center; 
+            font-size: 40vh; font-weight: bold; color: white; cursor: pointer; 
+            transition: transform 0.1s ease; 
+        }
+        
         .time:active { transform: scale(0.98); }
+
         #time-vermelho { background-color: #e74c3c; }
         #time-preto { background-color: #000000; }
     </style>
@@ -31,12 +94,7 @@
 <body>
 
 <div id="splash-screen">
-    <div class="logo">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#ffffff">
-            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM152 256c0-29.3 11.3-56.3 30.6-76.8c-35.3 46.8-35.3 106.8 0 153.6C163.3 312.3 152 285.3 152 256zm16 99.4c-11-14.6-16-32.5-16-51.4s5-36.8 16-51.4c22.1-29.4 53.6-46.6 88-46.6s65.9 17.2 88 46.6c11 14.6 16 32.5 16 51.4s-5 36.8-16 51.4c-22.1 29.4-53.6-46.6-88-46.6s-65.9-17.2-88-46.6zm220.2-176.2c-19.3-20.5-46.3-30.6-76.8-30.6c-29.3 0-56.3 11.3-76.8 30.6c46.8 35.3 106.8 35.3 153.6 0z"/>
-        </svg>
-    </div>
-    <div class="app-name">Placar Touch</div>
+    <div class="logo-volleyball"></div> <div class="app-name">Placar Touch</div>
 </div>
 
 <div id="placar-container" class="placar-container hidden">
@@ -60,14 +118,12 @@
         }, 2000);
     });
 
-    // CAMINHO CORRIGIDO: Sem a barra no início
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
             .then(reg => console.log('Service Worker registrado com sucesso!', reg))
             .catch(err => console.error('Falha ao registrar Service Worker:', err));
     }
     
-    // (O restante do código do placar continua aqui, idêntico ao anterior)
     const timeVermelhoEl = document.getElementById('time-vermelho');
     const timePretoEl = document.getElementById('time-preto');
     const timerEl = document.getElementById('timer');
