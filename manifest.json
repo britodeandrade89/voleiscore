@@ -1,0 +1,21 @@
+{
+  "name": "Placar Touch",
+  "short_name": "Placar Touch",
+  "start_url": ".",
+  "display": "fullscreen",
+  "background_color": "#1c1c1c",
+  "theme_color": "#1c1c1c",
+  "description": "Um placar simples e rápido para partidas de voleibol.",
+  "icons": [
+    {
+      "src": "https://www.google.com/s2/favicons?domain=volei.org&sz=192",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://www.google.com/s2/favicons?domain=volei.org&sz=512",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
