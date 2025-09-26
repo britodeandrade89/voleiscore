@@ -8,12 +8,12 @@
   "description": "Um placar simples e rápido para partidas de voleibol.",
   "icons": [
     {
-      "src": "https://www.google.com/s2/favicons?domain=volei.org&sz=192",
+      "src": "https://www.gstatic.com/images/icons/material/apps/light/sports_volleyball_FILL0_wght400_GRAD0_opsz24_192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "https://www.google.com/s2/favicons?domain=volei.org&sz=512",
+      "src": "https://www.gstatic.com/images/icons/material/apps/light/sports_volleyball_FILL0_wght400_GRAD0_opsz24_512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
